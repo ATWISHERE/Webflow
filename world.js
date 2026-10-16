@@ -134,15 +134,18 @@ class CyberWorld {
         // Ambient Light (Super bright & joyful, no dark shadows!)
         const ambient = new THREE.AmbientLight(0xffffff, 1.35);
         this.scene.add(ambient);
+        this.ambientLight = ambient;
 
         // Hemisphere Light (Sky cyan + Grass mint bounce)
         const hemi = new THREE.HemisphereLight(0xbae6fd, 0xdcfce7, 0.7);
         this.scene.add(hemi);
+        this.hemiLight = hemi;
 
         // Sun Directional Light
         const sun = new THREE.DirectionalLight(0xfff7e6, 1.4);
         sun.position.set(40, 70, 40);
         sun.castShadow = true;
+        this.sunLight = sun;
         sun.shadow.mapSize.width = 1024;
         sun.shadow.mapSize.height = 1024;
         sun.shadow.camera.near = 10;
@@ -166,6 +169,14 @@ class CyberWorld {
         ground.position.y = -6;
         ground.receiveShadow = true;
         this.scene.add(ground);
+        this.groundMesh = ground;
+
+        // Neon Circuit Grid Overlay (Emerges during Stage 2, 3, 4 Evolution)
+        const circuitGrid = new THREE.GridHelper(240, 48, 0x00f0ff, 0x0284c7);
+        circuitGrid.position.y = -5.9;
+        circuitGrid.visible = false;
+        this.scene.add(circuitGrid);
+        this.circuitGrid = circuitGrid;
 
         // Floating fluffy white clouds
         const cloudCoords = [
@@ -686,6 +697,67 @@ class CyberWorld {
         group.add(gift);
         this.robotGiftBox = gift;
 
+        // ====================================================================
+        // MK-II / MK-III EVOLUTION ATTACHMENTS (Evolve / Devolve in Real Time)
+        // ====================================================================
+        const mk2Group = new THREE.Group();
+        mk2Group.visible = false;
+
+        // Titanium Shoulder Pauldrons
+        const shoulderMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, metalness: 0.85, roughness: 0.2 });
+        const leftPaul = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.45, 0.45), shoulderMat);
+        leftPaul.position.set(-0.85, 1.35, 0);
+        mk2Group.add(leftPaul);
+
+        const rightPaul = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.45, 0.45), shoulderMat);
+        rightPaul.position.set(0.85, 1.35, 0);
+        mk2Group.add(rightPaul);
+
+        // Neon Arc Reactor Chest Plate
+        const reactor = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.22, 0.22, 0.1, 16),
+            new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 0.9 })
+        );
+        reactor.rotation.x = Math.PI / 2;
+        reactor.position.set(0, 1.1, 0.38);
+        mk2Group.add(reactor);
+
+        // Datalink Visor with HTTP Status Indicator
+        const visorMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x22c55e, emissiveIntensity: 0.95 });
+        const datalinkVisor = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.22, 0.22), visorMat);
+        datalinkVisor.position.set(0, 2.15, 0.45);
+        mk2Group.add(datalinkVisor);
+
+        // Twin Rocket Skates Thrusters
+        const jetMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8 });
+        const glowJetMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+
+        const leftJet = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, 0.35), jetMat);
+        leftJet.position.set(-0.35, 0.08, -0.25);
+        const leftGlow = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), glowJetMat);
+        leftGlow.position.set(-0.35, -0.1, -0.25);
+        mk2Group.add(leftJet);
+        mk2Group.add(leftGlow);
+
+        const rightJet = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, 0.35), jetMat);
+        rightJet.position.set(0.35, 0.08, -0.25);
+        const rightGlow = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), glowJetMat);
+        rightGlow.position.set(0.35, -0.1, -0.25);
+        mk2Group.add(rightJet);
+        mk2Group.add(rightGlow);
+
+        // Holographic Cryptographic Shield Ring (Mk-III & Mk-IV)
+        const shieldGeo = new THREE.TorusGeometry(1.6, 0.04, 8, 36);
+        const shieldMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75, wireframe: true });
+        const shieldRing = new THREE.Mesh(shieldGeo, shieldMat);
+        shieldRing.position.set(0, 1.2, 0);
+        shieldRing.visible = false;
+        mk2Group.add(shieldRing);
+        this.robotShieldRing = shieldRing;
+
+        group.add(mk2Group);
+        this.robotMk2Armor = mk2Group;
+
         // Position robot in front of PC
         group.position.copy(this.splineOutbound.getPointAt(0));
         this.scene.add(group);
@@ -798,6 +870,54 @@ class CyberWorld {
         }
     }
 
+    // ========================================================================
+    // IN-PAGE 3D EVOLUTION & DEVOLUTION CONTROLLER (NO PAGE RELOAD!)
+    // ========================================================================
+    evolveToStage(stageNum) {
+        this.currentStage = stageNum;
+        if (stageNum === 1) {
+            // Devolve to Stage 1: Kid Wonder (Mk-I Courier)
+            if (this.robot) this.robot.scale.set(1.0, 1.0, 1.0);
+            if (this.robotMk2Armor) this.robotMk2Armor.visible = false;
+            if (this.robotShieldRing) this.robotShieldRing.visible = false;
+            if (this.circuitGrid) this.circuitGrid.visible = false;
+            if (this.groundMesh) this.groundMesh.material.color.setHex(0x86efac);
+            if (this.renderer) this.renderer.setClearColor(0x7dd3fc, 1);
+            if (this.ambientLight) this.ambientLight.color.setHex(0xffffff);
+        } else if (stageNum === 2) {
+            // Evolve to Stage 2: Junior Dev (Mk-II Cyber Courier)
+            if (this.robot) this.robot.scale.set(1.24, 1.24, 1.24);
+            if (this.robotMk2Armor) this.robotMk2Armor.visible = true;
+            if (this.robotShieldRing) this.robotShieldRing.visible = false;
+            if (this.circuitGrid) this.circuitGrid.visible = true;
+            if (this.groundMesh) this.groundMesh.material.color.setHex(0x0f172a);
+            if (this.renderer) this.renderer.setClearColor(0x0f172a, 1);
+            if (this.ambientLight) this.ambientLight.color.setHex(0x38bdf8);
+        } else if (stageNum === 3) {
+            // Evolve to Stage 3: Senior Architect (Mk-III Titan)
+            if (this.robot) this.robot.scale.set(1.42, 1.42, 1.42);
+            if (this.robotMk2Armor) this.robotMk2Armor.visible = true;
+            if (this.robotShieldRing) this.robotShieldRing.visible = true;
+            if (this.circuitGrid) this.circuitGrid.visible = true;
+            if (this.groundMesh) this.groundMesh.material.color.setHex(0x1e1b4b);
+            if (this.renderer) this.renderer.setClearColor(0x1e1b4b, 1);
+            if (this.ambientLight) this.ambientLight.color.setHex(0xa855f7);
+        } else if (stageNum === 4) {
+            // Evolve to Stage 4: Cosmic Sovereign (Mk-IV)
+            if (this.robot) this.robot.scale.set(1.6, 1.6, 1.6);
+            if (this.robotMk2Armor) this.robotMk2Armor.visible = true;
+            if (this.robotShieldRing) this.robotShieldRing.visible = true;
+            if (this.circuitGrid) this.circuitGrid.visible = true;
+            if (this.groundMesh) this.groundMesh.material.color.setHex(0x030712);
+            if (this.renderer) this.renderer.setClearColor(0x030712, 1);
+            if (this.ambientLight) this.ambientLight.color.setHex(0x00f0ff);
+        }
+    }
+
+    devolveToStage(stageNum) {
+        this.evolveToStage(stageNum);
+    }
+
     flyCameraTo(targetPos, lookAtPos, duration = 1.2) {
         this.isFlyingCamera = true;
         this.camFlightProgress = 0.0;
@@ -903,6 +1023,12 @@ class CyberWorld {
         this.clouds.forEach((cloud, idx) => {
             cloud.position.x += Math.sin(elapsedTime * 0.3 + idx) * 0.02;
         });
+
+        // Rotate holographic shield ring if visible
+        if (this.robotShieldRing && this.robotShieldRing.visible) {
+            this.robotShieldRing.rotation.z += 0.03;
+            this.robotShieldRing.rotation.x += 0.01;
+        }
 
         this.renderer.render(this.scene, this.camera);
     }

@@ -489,10 +489,108 @@ document.addEventListener('DOMContentLoaded', () => {
         stationTitle.textContent = info.title;
         stationAnalogy.textContent = info.analogy;
         stationFact.textContent = info.fact;
+
+        // Check current evolution stage to show deep CS data
+        const techBox = document.getElementById('station-modal-tech-box');
+        const techText = document.getElementById('station-modal-tech');
+        const techCode = document.getElementById('station-modal-code');
+        const techTags = document.getElementById('station-modal-tags');
+
+        let stageData = null;
+        if (world.currentStage === 2 && window.STAGE_2_DATA) stageData = window.STAGE_2_DATA;
+        else if (world.currentStage === 3 && window.STAGE_3_DATA) stageData = window.STAGE_3_DATA;
+        else if (world.currentStage === 4 && window.STAGE_4_DATA) stageData = window.STAGE_4_DATA;
+
+        if (stageData && techBox) {
+            techBox.style.display = 'block';
+            const stationMap = { 'client': 0, 'dns': 1, 'bridge': 2, 'server': 3, 'api': 4 };
+            const sIdx = stationMap[id] !== undefined ? stationMap[id] : 0;
+            const techInfo = stageData.stations[sIdx] || stageData.stations[0];
+
+            techText.textContent = techInfo.techExplanation;
+            techCode.textContent = techInfo.codeSnippet;
+            techTags.innerHTML = '';
+            techInfo.keySpecs.forEach(spec => {
+                const pill = document.createElement('span');
+                pill.className = 'tech-spec-pill';
+                pill.textContent = spec;
+                techTags.appendChild(pill);
+            });
+        } else if (techBox) {
+            techBox.style.display = 'none';
+        }
+
         stationModal.classList.add('open');
         sound.playPop(700);
 
         world.focusStation(id);
+    }
+
+    // ------------------------------------------------------------------------
+    // In-Page Evolution & Devolution Controller (Stages 1 to 4)
+    // ------------------------------------------------------------------------
+    const tierButtons = document.querySelectorAll('.tier-btn');
+    tierButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stageNum = parseInt(btn.getAttribute('data-stage'), 10) || 1;
+            if (world.currentStage === stageNum) return;
+
+            const isEvolving = stageNum > (world.currentStage || 1);
+            world.evolveToStage(stageNum);
+
+            // Update UI buttons
+            tierButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Sound
+            if (sound.playEvolutionSound) {
+                sound.playEvolutionSound(isEvolving);
+            } else {
+                sound.playSuccess();
+            }
+
+            // Update story text & speech according to stage
+            if (stageNum === 1) {
+                updateStory(
+                    "🐣 Devolved to Stage 1: Kid Wonder! Sunny meadow & Byte-Bot Mk-I active.",
+                    "🐣 Back to Stage 1! Exploring the web with joyful kid analogies!"
+                );
+                sound.speak("Back to Stage 1: Kid Wonder! Exploring the web with cute analogies!");
+            } else if (stageNum === 2) {
+                updateStory(
+                    "🚀 EVOLVED TO STAGE 2: JUNIOR DEV! Byte-Bot upgraded with Titanium Armor & Datalink Visor!",
+                    "🚀 Stage 2 Active: Click stations to inspect Frontend DOM, Node.js Backend, and REST APIs!"
+                );
+                sound.speak("Evolved to Stage 2: Junior Dev! Full-stack architecture, REST APIs, and HTTP status codes unlocked!");
+            } else if (stageNum === 3) {
+                updateStory(
+                    "🌋 EVOLVED TO STAGE 3: SENIOR ARCHITECT! Mecha Titan Mk-III active with Cryptographic Shielding!",
+                    "🌋 Stage 3 Active: Click stations to inspect TCP 3-Way Handshake and TLS 1.3 Encryption!"
+                );
+                sound.speak("Evolved to Stage 3: Senior Architect! Transport protocols, TLS 1.3 cryptography, and enterprise databases unlocked!");
+            } else if (stageNum === 4) {
+                updateStory(
+                    "🌐 EVOLVED TO STAGE 4: COSMIC SOVEREIGN! Sovereign Mk-IV orbital sentinel active!",
+                    "🌐 Stage 4 Active: Click stations to inspect HTTP/3 QUIC, CAP Theorem, Kafka, and Edge Computing!"
+                );
+                sound.speak("Evolved to Stage 4: Cosmic Sovereign! Distributed systems, QUIC protocol, and global cloud infrastructure unlocked!");
+            }
+        });
+    });
+
+    // Copy code button inside station modal
+    const btnCopyTechCode = document.getElementById('btn-copy-tech-code');
+    if (btnCopyTechCode) {
+        btnCopyTechCode.addEventListener('click', () => {
+            const code = document.getElementById('station-modal-code').textContent;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    btnCopyTechCode.textContent = '✅ Copied!';
+                    sound.playSuccess();
+                    setTimeout(() => { btnCopyTechCode.textContent = '📋 Copy Code'; }, 2000);
+                });
+            }
+        });
     }
 
     window.onStationClick = (id) => {

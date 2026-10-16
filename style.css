@@ -943,3 +943,103 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ============================================================================
+   IN-PAGE EVOLUTION TIER BAR (STAGE 1 TO STAGE 4)
+   ============================================================================ */
+
+.evolution-tier-bar {
+    position: absolute;
+    top: 136px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 9;
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid var(--card-border);
+    border-radius: 28px;
+    padding: 6px 12px;
+    box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15);
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.tier-btn {
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 20px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.tier-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.tier-btn.active {
+    background: #ffffff;
+    border-color: var(--brand-blue);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.tier-icon {
+    font-size: 1.25rem;
+}
+
+.tier-label-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.tier-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.tier-btn.active .tier-name {
+    color: var(--brand-blue);
+}
+
+.tier-evolution-tag {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Tech Specs Tag Pill */
+.tech-spec-pill {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 3px 8px;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .evolution-tier-bar {
+        top: 140px;
+        width: 96%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 4px 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tier-btn {
+        padding: 4px 10px;
+        white-space: nowrap;
+    }
+}
+
