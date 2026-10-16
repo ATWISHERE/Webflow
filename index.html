@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberVerse: How the Web Works (4D Kids Edition - Stage 1)</title>
+    <meta name="description" content="Stage 1: Kid Wonder - Type any URL, watch a tiny robot journey through DNS, Rainbow Fiber Highway, and Cloud Server, and return to power on a live working website!">
+    <link rel="icon" type="image/jpeg" href="assets/mascot.jpg">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Libraries (Local with CDN fallbacks) -->
+    <script src="lib/three.min.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
+    <script src="lib/OrbitControls.js"></script>
+    <script>
+        if (typeof THREE !== 'undefined' && !THREE.OrbitControls) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+        }
+    </script>
+    <script src="lib/confetti.browser.min.js"></script>
+    <script>
+        if (typeof confetti === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"><\/script>');
+        }
+    </script>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Top Left Brand Mascot -->
+    <div class="top-left-brand" id="brand-mascot-btn" title="Click me to talk!">
+        <img src="assets/mascot.jpg" alt="Professor Byte" class="mascot-thumb">
+        <div class="brand-titles">
+            <h1>ATW WEB FLOW</h1>
+            <span style="color: var(--brand-blue); font-weight: 700;">Stage 1: Kid Wonder • 4D Journey</span>
+        </div>
+    </div>
+
+    <!-- Top Center Action: Interactive Address Bar -->
+    <header class="top-action-bar" role="banner">
+        <div class="browser-input-row">
+            <div class="browser-dots">
+                <span class="browser-dot dot-red"></span>
+                <span class="browser-dot dot-yellow"></span>
+                <span class="browser-dot dot-green"></span>
+            </div>
+            <div class="url-input-box">
+                <span class="url-icon">🔒</span>
+                <input type="text" id="url-input" class="url-input" value="https://cat-games.fun" placeholder="Type a website URL...">
+            </div>
+            <button class="btn-go" id="btn-start-journey" title="Send Robot on Web Mission!">
+                <span>🚀 GO!</span>
+            </button>
+        </div>
+
+        <div class="url-presets">
+            <span class="preset-label">⭐ Quick Pick:</span>
+            <button class="preset-pill active" data-url="https://cat-games.fun" data-name="🐱 Cat Games Live">🐱 cat-games.fun</button>
+            <button class="preset-pill" data-url="https://pizza-party.com" data-name="🍕 Pizza Party Robot">🍕 pizza-party.com</button>
+            <button class="preset-pill" data-url="https://space-arcade.io" data-name="🚀 Space Arcade 3000">🚀 space-arcade.io</button>
+            <button class="preset-pill" data-url="https://unicorn-cloud.net" data-name="🦄 Rainbow Unicorns">🦄 unicorn-cloud.net</button>
+        </div>
+    </header>
+
+    <!-- Top Right Tools -->
+    <nav class="top-right-tools">
+        <button class="tool-btn" id="btn-toggle-sound" title="Toggle Sound">
+            <span id="sound-icon">🔊 Sound</span>
+        </button>
+        <button class="tool-btn" id="btn-toggle-cam" title="Toggle Camera Follow Mode">
+            <span id="cam-icon">🎥 Follow: OFF</span>
+        </button>
+        <button class="tool-btn" id="btn-mobile-link" title="Connect Mobile Phone on Same Wi-Fi" style="border-color: #22c55e;">
+            <span>📱 Mobile Link</span>
+        </button>
+        <a href="interactive_presentation.html" class="tool-btn" title="Interactive Presentation Slide Deck">
+            <span>📊 Slides PPT</span>
+        </a>
+        <a href="ATW_Web_Flow_Guide.docx" download class="tool-btn" title="Download Word Guide">
+            <span>📄 Word Doc</span>
+        </a>
+    </nav>
+
+    <!-- Bottom Journey Progress & 4D Time Machine -->
+    <footer class="bottom-journey-bar" role="region" aria-label="Web Journey Steps">
+        <div class="story-header">
+            <div class="story-title-group">
+                <span>⏱️ THE 4D WEB FLOW:</span>
+                <span id="story-phase-text">Type any URL & hit 'GO!' to see the robot run!</span>
+            </div>
+            <div class="robot-speech-bubble" id="robot-bubble">
+                🤖 "I'm ready to fetch your website files!"
+            </div>
+        </div>
+
+        <!-- 5 Visual Stages -->
+        <div class="journey-steps-grid">
+            <div class="journey-step active" id="step-1" data-t="0">
+                <span class="step-icon">💻</span>
+                <span class="step-label">1. PC Browser</span>
+            </div>
+            <div class="journey-step" id="step-2" data-t="0.25">
+                <span class="step-icon">🔮</span>
+                <span class="step-label">2. DNS Owl</span>
+            </div>
+            <div class="journey-step" id="step-3" data-t="0.45">
+                <span class="step-icon">🌈</span>
+                <span class="step-label">3. Rainbow Road</span>
+            </div>
+            <div class="journey-step" id="step-4" data-t="0.75">
+                <span class="step-icon">☁️</span>
+                <span class="step-label">4. Server & API</span>
+            </div>
+            <div class="journey-step" id="step-5" data-t="1.0">
+                <span class="step-icon">✨</span>
+                <span class="step-label">5. Site Working!</span>
+            </div>
+        </div>
+
+        <!-- 4D Time Machine Scrubber & Speed Controls -->
+        <div class="time-scrub-row">
+            <button class="scrub-btn" id="btn-rewind" title="Rewind Time">⏮️ Start</button>
+            <button class="scrub-btn" id="btn-play-pause" title="Play or Pause">▶️ Play</button>
+            <input type="range" min="0" max="100" value="0" step="0.5" class="scrub-slider" id="time-slider" aria-label="4D Time Scrubber">
+            <button class="scrub-btn" id="btn-fastforward" title="Jump to Loaded Site">⏩ Finish</button>
+
+            <!-- Speed Options -->
+            <div class="speed-control-box">
+                <span class="speed-tag-label">⏱️ Speed:</span>
+                <button class="speed-btn active" data-speed="0.25" title="Super Slow - Best for learning!">🐢 Slow</button>
+                <button class="speed-btn" data-speed="0.6" title="Normal Walking Pace">🚶 Normal</button>
+                <button class="speed-btn" data-speed="1.2" title="Fast Running Pace">🏃 Fast</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Real Playable Working Website Modal -->
+    <div class="site-working-modal" id="working-site-modal" role="dialog" aria-modal="true">
+        <div class="site-window-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="site-tag-success">🟢 HTTP 200 OK</span>
+                <span id="modal-site-url" style="font-family: var(--font-heading); font-size: 0.95rem; color: #475569; font-weight: 700;">https://cat-games.fun</span>
+            </div>
+            
+            <!-- Live Tech Sandbox Toggles (HTML, CSS, JS) -->
+            <div class="tech-switcher-bar">
+                <button class="tech-toggle-btn active" id="btn-toggle-css" title="Toggle CSS Stylesheet ON/OFF">🎨 CSS: ON</button>
+                <button class="tech-toggle-btn active" id="btn-toggle-js" title="Toggle JavaScript Brain ON/OFF">⚡ JS: ON</button>
+            </div>
+
+            <button class="close-btn" id="btn-close-working-site" title="Close Website">&times;</button>
+        </div>
+
+        <!-- The Live Working Playground Screen -->
+        <div class="interactive-website-screen" id="site-display-screen">
+            <!-- Site Banner -->
+            <div class="site-banner">
+                <span class="site-banner-icon" id="site-icon">🐱</span>
+                <div>
+                    <h3 id="site-title">Cat Games Live!</h3>
+                    <p id="site-desc">Assembled by your browser with HTML skeleton, CSS styles, and live API data!</p>
+                </div>
+            </div>
+
+            <!-- Real Interactive Cat Playground Arena -->
+            <div class="cat-game-arena" id="cat-arena">
+                <div class="cat-character-stage">
+                    <div class="cat-mascot-box" id="cat-mascot">
+                        <div class="cat-hat" id="cat-hat">🎩</div>
+                        <div class="cat-face" id="cat-face">🐱</div>
+                        <div class="cat-mood" id="cat-mood-label">Happy & Playful! ❤️</div>
+                    </div>
+
+                    <!-- Live Dynamic API Data Feed -->
+                    <div class="cat-live-stats">
+                        <div class="stat-badge">🐟 Catnip Points: <strong id="cat-score">100</strong></div>
+                        <div class="stat-badge">❤️ Happiness: <strong id="cat-happy">100%</strong></div>
+                        <div class="stat-badge">📡 Live Players: <strong id="cat-players">5,420</strong></div>
+                        <div class="stat-badge">☀️ Weather: <strong id="cat-weather">76°F Sunny</strong></div>
+                    </div>
+                </div>
+
+                <!-- Interactive Toy Actions -->
+                <div class="cat-action-grid">
+                    <button class="toy-action-btn" id="btn-cat-yarn">🧶 Throw Yarn Ball (+50 pts)</button>
+                    <button class="toy-action-btn" id="btn-cat-fish">🐟 Feed Fish Snack (+100 pts)</button>
+                    <button class="toy-action-btn" id="btn-cat-laser">🔴 Shine Laser Pointer</button>
+                    <button class="toy-action-btn" id="btn-cat-hat">🎩 Change Cute Hat</button>
+                </div>
+
+                <div id="toy-reaction" class="toy-reaction-text">
+                    ✨ Click any toy above to test the live JavaScript and API!
+                </div>
+            </div>
+
+            <!-- Technical Web Explanation Footer -->
+            <div class="site-explain-footer">
+                <span>🦴 <strong>HTML</strong> provided the buttons & text</span>
+                <span>🎨 <strong>CSS</strong> gave the colors & cute layout</span>
+                <span>⚡ <strong>JavaScript</strong> powers the toy reactions!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Station Educational Card Modal -->
+    <div class="station-modal" id="station-modal" role="dialog" aria-modal="true">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase;" id="station-modal-badge">STATION</span>
+                <h2 style="font-family: var(--font-heading); font-size: 1.35rem; color: #0f172a;" id="station-modal-title">Station Name</h2>
+            </div>
+            <button class="close-btn" id="btn-close-station">&times;</button>
+        </div>
+
+        <div class="analogy-box">
+            <strong style="color: #166534; font-size: 0.85rem;">💡 The Kid Analogy:</strong>
+            <p id="station-modal-analogy" style="margin-top: 4px;">Analogy text goes here...</p>
+        </div>
+
+        <div class="fun-fact-box">
+            <strong style="color: #854d0e; font-size: 0.85rem;">⚡ Mind-Blowing Web Fact:</strong>
+            <p id="station-modal-fact" style="margin-top: 4px;">Fact text goes here...</p>
+        </div>
+
+        <button class="station-read-btn" id="btn-read-station">
+            <span>🔊 Robot Byte, Read This!</span>
+        </button>
+    </div>
+
+    <!-- Mobile Local Network Connect Modal -->
+    <div class="station-modal" id="mobile-modal" role="dialog" aria-modal="true" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span style="font-size: 0.8rem; font-weight: 700; color: #16a34a; text-transform: uppercase;">LOCAL NETWORK ACCESS</span>
+                <h2 style="font-family: var(--font-heading); font-size: 1.35rem; color: #0f172a;">📱 Open on Your Mobile Phone</h2>
+            </div>
+            <button class="close-btn" id="btn-close-mobile">&times;</button>
+        </div>
+
+        <div class="analogy-box" style="margin-top: 14px;">
+            <strong style="color: #166534; font-size: 0.9rem;">📶 Connect on the Same Wi-Fi:</strong>
+            <p style="margin-top: 6px; font-size: 0.92rem; color: #334155;">
+                Make sure your phone or tablet is connected to the same Wi-Fi network as this computer, then open any browser and visit:
+            </p>
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                <input type="text" id="mobile-ip-input" readonly value="http://192.168.1.2:5173/" style="flex: 1; padding: 10px 14px; font-family: monospace; font-size: 1.05rem; font-weight: 700; color: #0369a1; background: #e0f2fe; border: 2px solid #38bdf8; border-radius: 12px; outline: none;">
+                <button id="btn-copy-mobile-ip" class="btn-go" style="padding: 10px 18px; font-size: 0.95rem; border-radius: 12px;">📋 Copy</button>
+            </div>
+            <div id="copy-feedback" style="font-size: 0.82rem; color: #16a34a; font-weight: 700; margin-top: 6px; min-height: 1.2rem;"></div>
+        </div>
+
+        <div class="fun-fact-box" style="margin-top: 12px;">
+            <strong style="color: #854d0e; font-size: 0.85rem;">⚡ Multi-Device Web Fact:</strong>
+            <p style="margin-top: 4px; font-size: 0.85rem; color: #475569;">
+                Your computer acts as a live HTTP host! Packets fly between your smartphone and PC through your home Wi-Fi router in under 1 millisecond.
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="audio.js"></script>
+    <script src="world.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

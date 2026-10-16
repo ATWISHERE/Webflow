@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Presentation: ATW WEB FLOW 4D Web Flow</title>
+    <link rel="icon" type="image/jpeg" href="assets/mascot.jpg">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap">
+    <style>
+        :root {
+            --bg-dark: #070a17;
+            --slide-bg: rgba(15, 23, 42, 0.94);
+            --card-border: rgba(56, 189, 248, 0.35);
+            --neon-cyan: #00f0ff;
+            --neon-pink: #ff007f;
+            --neon-purple: #b026ff;
+            --neon-yellow: #ffea00;
+            --neon-green: #00ff88;
+            --neon-orange: #ff9100;
+            --font-head: 'Fredoka', cursive, sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-mono: 'Space Grotesk', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            font-family: var(--font-body);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 240, 255, 0.12), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(255, 0, 127, 0.12), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(176, 38, 255, 0.08), transparent 50%);
+        }
+
+        /* Top Presenter Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-title img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-yellow);
+        }
+
+        .brand-title h1 {
+            font-family: var(--font-head);
+            font-size: 1.15rem;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .deck-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--neon-cyan);
+            color: #0f172a;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Slide Stage Container */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+        }
+
+        .slide-card {
+            width: 100%;
+            max-width: 1080px;
+            height: 580px;
+            background: var(--slide-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 28px;
+            padding: 44px 52px;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(20px);
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide-card.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Slide Elements */
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .slide-tag {
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 8px;
+            letter-spacing: 0.8px;
+        }
+
+        .tag-cyan { background: rgba(0, 240, 255, 0.15); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); }
+        .tag-pink { background: rgba(255, 0, 127, 0.15); color: var(--neon-pink); border: 1px solid var(--neon-pink); }
+        .tag-yellow { background: rgba(255, 234, 0, 0.15); color: var(--neon-yellow); border: 1px solid var(--neon-yellow); }
+        .tag-purple { background: rgba(176, 38, 255, 0.15); color: var(--neon-purple); border: 1px solid var(--neon-purple); }
+        .tag-green { background: rgba(0, 255, 136, 0.15); color: var(--neon-green); border: 1px solid var(--neon-green); }
+
+        .slide-title {
+            font-family: var(--font-head);
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-top: 8px;
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .slide-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 32px;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .slide-body.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        .content-box {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .analogy-quote {
+            background: rgba(30, 41, 59, 0.7);
+            border-left: 5px solid var(--neon-cyan);
+            border-radius: 0 16px 16px 0;
+            padding: 16px 20px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #f1f5f9;
+        }
+
+        .feature-bullets {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feature-bullets li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .feature-bullets li span.icon {
+            font-size: 1.2rem;
+        }
+
+        .visual-display-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            min-height: 240px;
+            position: relative;
+        }
+
+        .big-emoji {
+            font-size: 4rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+        }
+
+        .visual-title {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .visual-desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 14px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        /* Bottom Interactive Deck Controls */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dot.active {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            transform: scale(1.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-btn {
+            background: var(--neon-cyan);
+            border: none;
+            color: #0f172a;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 10px 22px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-counter {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: #94a3b8;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            header, footer, .deck-tools {
+                display: none !important;
+            }
+            main {
+                display: block !important;
+                padding: 0 !important;
+            }
+            .slide-card {
+                display: flex !important;
+                page-break-after: always;
+                border: 2px solid #ccc !important;
+                box-shadow: none !important;
+                background: white !important;
+                color: black !important;
+                margin-bottom: 20px;
+                height: 90vh !important;
+            }
+            .slide-title, .visual-title {
+                color: #000 !important;
+            }
+            .analogy-quote {
+                background: #f1f5f9 !important;
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand-title">
+            <img src="assets/mascot.jpg" alt="Professor Byte">
+            <div>
+                <h1>ATW WEB FLOW: 4D Interactive Slide Deck</h1>
+                <p style="font-size: 0.75rem; color: #94a3b8;">The Complete Visual Guide for Kids Under 12</p>
+            </div>
+        </div>
+
+        <div class="deck-tools">
+            <button class="btn" id="btn-fullscreen" title="Toggle Fullscreen Presentation">🖥️ Fullscreen</button>
+            <button class="btn" onclick="window.print()" title="Print or Save as PDF">🖨️ Print / PDF</button>
+            <a href="index.html" class="btn" style="background: var(--neon-pink); border-color: var(--neon-pink); text-decoration: none;">🎮 Launch 3D World</a>
+        </div>
+    </header>
+
+    <!-- Main Slides Container -->
+    <main>
+
+        <!-- Slide 1: Title Slide -->
+        <section class="slide-card active" data-slide="1">
+            <div class="slide-header">
+                <span class="slide-tag tag-cyan">WELCOME TO ATW WEB FLOW</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 1 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">The Secret Life of the Web in 4D! 🚀</h2>
+                    <p class="slide-subtitle">How HTML, Clients, Servers & APIs work together at light speed.</p>
+                    <div class="analogy-quote">
+                        "Have you ever wondered what happens in the split second between clicking a link and watching a video? Welcome inside your screen!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🤖</span> Guided by Professor Byte, your friendly robot companion</li>
+                        <li><span class="icon">⏱️</span> 4D Time Machine: Rewind, scrub, and freeze data packets</li>
+                        <li><span class="icon">🎮</span> Hands-on Build-A-Page Lab & Collectible Cyber Badges</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-cyan);">
+                    <img src="assets/mascot.jpg" style="width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--neon-cyan); margin-bottom: 12px; box-shadow: 0 0 25px var(--neon-cyan);" alt="Byte Mascot">
+                    <h3 class="visual-title">Professor Byte</h3>
+                    <p class="visual-desc">Ready to take you on a journey through the 4th dimension of computer networks!</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Use Arrow Keys (◀ / ▶) or Spacebar to navigate</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 2: What is the 4th Dimension? -->
+        <section class="slide-card" data-slide="2">
+            <div class="slide-header">
+                <span class="slide-tag tag-purple">THE 4D CONCEPT</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 2 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">What is the 4th Dimension? ⏱️</h2>
+                    <p class="slide-subtitle">Space has 3 dimensions. Time is the 4th!</p>
+                    <div class="analogy-quote">
+                        "In flat 2D books, drawings never move. In 3D, you can rotate around a toy. In 4D, you control <strong>TIME ITSELF</strong>!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">⏪</span> <strong>Time Scrubbing</strong>: Slide between 0ms (The Click) and 12ms (Page Load)</li>
+                        <li><span class="icon">❄️</span> <strong>Bullet-Time Freeze</strong>: Stop packets in mid-air over the ocean</li>
+                        <li><span class="icon">👻</span> <strong>4D Ghost Echoes</strong>: See where a packet was and where it will be at the exact same moment!</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-purple);">
+                    <div class="big-emoji">⏱️✨</div>
+                    <h3 class="visual-title">Quantum Time Slider</h3>
+                    <p class="visual-desc">0% Click URL ➔ 25% DNS Map ➔ 50% Light Highway ➔ 75% Server Kitchen ➔ 100% Page Assembled!</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Concept: Time as an interactive learning dimension</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 3: Station 1 - The Client -->
+        <section class="slide-card" data-slide="3">
+            <div class="slide-header">
+                <span class="slide-tag tag-cyan">STATION 1</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 3 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">The Client (Your Device! 💻)</h2>
+                    <p class="slide-subtitle">Where every web adventure begins.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "You are the Client! Your laptop, phone, or Nintendo Switch is a curious detective holding a walkie-talkie shouting: 'Hey Internet, I want to play a game!'"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🏷️</span> <strong>IP Address</strong>: Your device's unique digital home address</li>
+                        <li><span class="icon">📡</span> <strong>Wi-Fi Antenna</strong>: Turns your clicks into invisible radio waves</li>
+                        <li><span class="icon">📦</span> <strong>The Request</strong>: Packs a digital letter asking for web files</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-cyan);">
+                    <div class="big-emoji">💻📡</div>
+                    <h3 class="visual-title">Client Station</h3>
+                    <p class="visual-desc">A glowing tech island with an interactive screen canvas and pulsing radio waves.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: Client Explorer Island</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 4: Station 2 - DNS Satellite -->
+        <section class="slide-card" data-slide="4">
+            <div class="slide-header">
+                <span class="slide-tag tag-purple">STATION 2</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 4 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">DNS: The Magic Phonebook Owl 🔮</h2>
+                    <p class="slide-subtitle">Translating words into computer coordinates.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "Humans love words like <code>roblox.com</code>, but computers ONLY understand numbers! The DNS is a magical cosmic owl who turns website names into coordinate numbers (IPs) in 2 milliseconds!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🔍</span> <strong>Name to Number</strong>: Turns <code>kitty-cafe.fun</code> into <code>142.250.190.46</code></li>
+                        <li><span class="icon">⚡</span> <strong>Lightning Speed</strong>: Handles billions of requests every second without getting dizzy</li>
+                        <li><span class="icon">🛰️</span> <strong>Satellite Radar</strong>: Pins down the exact server location</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-purple);">
+                    <div class="big-emoji">🔮🛰️</div>
+                    <h3 class="visual-title">DNS Asteroid Pod</h3>
+                    <p class="visual-desc">Golden rotating solar panels & scanning parabolic radar dishes tracking packets.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: DNS Satellite</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 5: Station 3 - Rainbow Fiber Highway -->
+        <section class="slide-card" data-slide="5">
+            <div class="slide-header">
+                <span class="slide-tag tag-pink">STATION 3</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 5 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">Rainbow Fiber Highway 🌈</h2>
+                    <p class="slide-subtitle">Traveling across the planet at the speed of light.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "Underneath our oceans and roads are glass cables thinner than your hair! Laser light pulses shoot through them carrying your messages at 124,000 miles every single second!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🌊</span> <strong>Undersea Cables</strong>: Wrap all the way around planet Earth</li>
+                        <li><span class="icon">✨</span> <strong>Photon Streams</strong>: Little particles of light carrying 0s and 1s</li>
+                        <li><span class="icon">🚀</span> <strong>Data Packets</strong>: Broken into bite-sized puzzle pieces for super speed</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-pink);">
+                    <div class="big-emoji">🌈⚡</div>
+                    <h3 class="visual-title">Light Speed Tunnel</h3>
+                    <p class="visual-desc">Curved 3D Catmull-Rom spline tube pulsing with animated photon particles.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: Fiber Optic Highway</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 6: Station 4 - Cloud Server Citadel -->
+        <section class="slide-card" data-slide="6">
+            <div class="slide-header">
+                <span class="slide-tag tag-green">STATION 4</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 6 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">Cloud Server: The Mega-Kitchen ☁️</h2>
+                    <p class="slide-subtitle">The super-computer that cooks your web files.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "A Server is a giant computer that never sleeps! When your packet arrives, the server is like a master chef: it opens its recipe vault, cooks up your HTML skeleton, paints the CSS colors, and packs it for delivery!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">❄️</span> <strong>Super Chilly</strong>: Kept in giant cold rooms called Data Centers</li>
+                        <li><span class="icon">💡</span> <strong>Blinking LEDs</strong>: Green, blue, and amber lights show files being cooked</li>
+                        <li><span class="icon">🌪️</span> <strong>Cooling Fans</strong>: Keep the giant processors from overheating</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-green);">
+                    <div class="big-emoji">☁️🏢</div>
+                    <h3 class="visual-title">Server Citadel</h3>
+                    <p class="visual-desc">Towering skyscrapers, spinning cooling turbines, and a glowing green plasma core.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: Cloud Server Citadel</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 7: Station 5 - The API Waiter Drone -->
+        <section class="slide-card" data-slide="7">
+            <div class="slide-header">
+                <span class="slide-tag tag-yellow">STATION 5</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 7 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">The API Drone: The Digital Waiter 🤖</h2>
+                    <p class="slide-subtitle">Delivering fresh data without rebuilding the whole world.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "At a restaurant, you don't walk into the kitchen to cook! You tell the friendly WAITER: 'One cheese pizza please!' The waiter brings just the pizza! An API is that waiter—it brings live weather or game scores without reloading your screen!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">📦</span> <strong>JSON Cargo</strong>: Tiny packets of live info like <code>{ weather: "☀️ 75°", score: 9999 }</code></li>
+                        <li><span class="icon">🤝</span> <strong>Bridge Between Apps</strong>: Lets Minecraft, Discord, and Roblox talk to each other</li>
+                        <li><span class="icon">🚁</span> <strong>Hover Drone</strong>: Flies out on demand without disturbing the rest of the page</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-yellow);">
+                    <div class="big-emoji">🤖🚁</div>
+                    <h3 class="visual-title">API Messenger Hub</h3>
+                    <p class="visual-desc">Quadcopter drone with spinning rotors carrying an illuminated JSON payload box.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: API Messenger Drone</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 8: Station 6 - Build-A-Page Lab -->
+        <section class="slide-card" data-slide="8">
+            <div class="slide-header">
+                <span class="slide-tag tag-pink">STATION 6</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 8 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">HTML, CSS & JS: The Superhero Trio 🧪</h2>
+                    <p class="slide-subtitle">The three best friends that build every website on Earth.</p>
+                    <div class="analogy-quote">
+                        "Every webpage is a living robot toy! Together they make pure internet magic!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🦴</span> <strong>HTML (The Skeleton)</strong>: Wireframe bones, paragraphs, and buttons.</li>
+                        <li><span class="icon">🎨</span> <strong>CSS (The Clothes & Style)</strong>: Vibrant colors, slick superhero cape, and curves.</li>
+                        <li><span class="icon">⚡</span> <strong>JavaScript (The Brain)</strong>: Batteries & powers that make it jump, dance, and shoot confetti!</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-pink);">
+                    <div class="big-emoji">🦴🎨⚡</div>
+                    <h3 class="visual-title">Interactive 3D Robot</h3>
+                    <p class="visual-desc">Flip switches in the lab to see the 3D model and live page preview transform!</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: Build-A-Page Lab</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 9: Station 7 - Webpage vs Website -->
+        <section class="slide-card" data-slide="9">
+            <div class="slide-header">
+                <span class="slide-tag tag-purple">STATION 7</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 9 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">Webpage vs Website: The Comic Book 📖</h2>
+                    <p class="slide-subtitle">One single page vs the entire magical book.</p>
+                    <div class="analogy-quote">
+                        💡 <strong>The Kid Analogy:</strong> "A Webpage is like ONE SINGLE PAGE in your favorite comic book (for example, the 'About Me' page or 'Level 1'). A Website is the ENTIRE COMIC BOOK bound together by hyperlinks!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">📄</span> <strong>Webpage</strong>: A single document (like <code>index.html</code>)</li>
+                        <li><span class="icon">📚</span> <strong>Website</strong>: A full collection of pages created by the same author or school</li>
+                        <li><span class="icon">🔗</span> <strong>Hyperlinks</strong>: The secret teleporters that jump from page to page</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-purple);">
+                    <div class="big-emoji">📖✨</div>
+                    <h3 class="visual-title">The Magic Book</h3>
+                    <p class="visual-desc">Floating holographic book with glowing pages turning in 3D space.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Station: Webpage vs Website</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+        <!-- Slide 10: Quiz & Quick Start -->
+        <section class="slide-card" data-slide="10">
+            <div class="slide-header">
+                <span class="slide-tag tag-yellow">MISSION READY</span>
+                <span style="font-size: 0.85rem; color: #94a3b8;">Slide 10 / 10</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h2 class="slide-title">You Are Ready, Cyber Explorer! 🏆</h2>
+                    <p class="slide-subtitle">Put on your explorer goggles and launch your first packet.</p>
+                    <div class="analogy-quote">
+                        "Double click <strong>start.bat</strong> to launch the 3D world, explore the stations, and earn all 4 Cyber Badges in the Quiz Quest!"
+                    </div>
+                    <ul class="feature-bullets">
+                        <li><span class="icon">🚀</span> <strong>Launch Mission</strong>: Send packets to Kitty Cafe or Space Arcade</li>
+                        <li><span class="icon">⌨️</span> <strong>Controls</strong>: Space = Play/Pause, Arrows = Time Scrub, Esc = Close</li>
+                        <li><span class="icon">🔊</span> <strong>Synthesized Audio & Voice</strong>: Listen to Professor Byte narrate</li>
+                    </ul>
+                </div>
+                <div class="visual-display-box" style="border-color: var(--neon-yellow);">
+                    <div class="big-emoji">🏆🎉</div>
+                    <h3 class="visual-title">Junior Web Wizard</h3>
+                    <p class="visual-desc">Complete the 4-question quiz in the 3D app to collect all 4 official badges!</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Presentation Complete! Press 'Launch 3D World' above.</span>
+                <span>ATW WEB FLOW Education Series</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Deck Controls -->
+    <footer>
+        <div class="progress-dots" id="dots-container">
+            <!-- Injected by JavaScript -->
+        </div>
+
+        <div class="nav-buttons">
+            <span class="slide-counter" id="slide-num-indicator">1 / 10</span>
+            <button class="nav-btn" id="btn-prev" disabled>◀ Prev</button>
+            <button class="nav-btn" id="btn-next">Next ▶</button>
+        </div>
+    </footer>
+
+    <!-- Interactive Deck Navigation Script -->
+    <script>
+        const slides = document.querySelectorAll('.slide-card');
+        const dotsContainer = document.getElementById('dots-container');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const counter = document.getElementById('slide-num-indicator');
+        let currentSlide = 0;
+
+        // Generate dots
+        slides.forEach((_, idx) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(idx));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlideUI() {
+            slides.forEach((s, idx) => {
+                s.classList.toggle('active', idx === currentSlide);
+            });
+
+            dots.forEach((d, idx) => {
+                d.classList.toggle('active', idx === currentSlide);
+            });
+
+            btnPrev.disabled = currentSlide === 0;
+            btnNext.disabled = currentSlide === slides.length - 1;
+            counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        function goToSlide(idx) {
+            currentSlide = Math.max(0, Math.min(slides.length - 1, idx));
+            updateSlideUI();
+        }
+
+        btnPrev.addEventListener('click', () => goToSlide(currentSlide - 1));
+        btnNext.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+        // Keyboard navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                e.preventDefault();
+                goToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                goToSlide(currentSlide - 1);
+            }
+        });
+
+        // Fullscreen toggle
+        const btnFs = document.getElementById('btn-fullscreen');
+        btnFs.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+                btnFs.textContent = '🗗 Exit Fullscreen';
+            } else {
+                document.exitFullscreen().catch(() => {});
+                btnFs.textContent = '🖥️ Fullscreen';
+            }
+        });
+    </script>
+</body>
+</html>
